@@ -11,10 +11,10 @@
     "license": "MIT",
     "require": {
         "php": "^8.0",
-        "bitbag/shipping-export-plugin": "^1.7",
+        "bitbag/shipping-export-plugin": "^v3.0.3",
         "debuss-a/mtomsoapclient": "^2.1",
-        "setono/sylius-pickup-point-plugin": "^1.1",
-        "sylius/sylius": "^1.11"
+        "setono/sylius-pickup-point-plugin": "^1.3",
+        "sylius/sylius": "^1.12.16"
     },
     "require-dev": {
         "behat/behat": "^3.6.1",
@@ -49,7 +49,8 @@
         "polishsymfonycommunity/symfony-mocker-container": "^1.0"
     },
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": true
     },
     "extra": {
         "branch-alias": {
