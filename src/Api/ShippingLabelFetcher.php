@@ -5,15 +5,16 @@ declare(strict_types=1);
 namespace Ikuzo\SyliusChronopostPlugin\Api;
 
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class ShippingLabelFetcher implements ShippingLabelFetcherInterface
 {
-    private FlashBagInterface $flashBag;
+    private RequestStack $request;
     private SoapClientInterface $soapClient;
 
-    public function __construct(FlashBagInterface $flashBag, SoapClientInterface $soapClient)
+    public function __construct(private RequestStack $requestStack, SoapClientInterface $soapClient)
     {
-        $this->flashBag = $flashBag;
+        $this->request = $requestStack;
         $this->soapClient = $soapClient;
     }
 
@@ -33,7 +34,7 @@ class ShippingLabelFetcher implements ShippingLabelFetcherInterface
         try {
             $this->response = $this->soapClient->createShipment($data);
         } catch (\SoapFault $exception) {
-            $this->flashBag->add(
+            $this->request->getSession()->add(
                 'error',
                 sprintf(
                     'Chronopost Service for #%s order: %s',
@@ -67,6 +68,9 @@ class ShippingLabelFetcher implements ShippingLabelFetcherInterface
         ];
     }
 
+    /**
+     * @throws \Exception
+     */
     private function getRefValue($shippingGateway, $shipment): array
     {
         $data = [
@@ -148,7 +152,7 @@ class ShippingLabelFetcher implements ShippingLabelFetcherInterface
                 case 'f':
                     $data['customerCivility'] = 'L';
                     break;
-                
+
                 default:
                     $data['customerCivility'] = 'E';
                     break;
@@ -190,7 +194,7 @@ class ShippingLabelFetcher implements ShippingLabelFetcherInterface
                 case 'f':
                     $data['recipientCivility'] = 'L';
                     break;
-                
+
                 default:
                     $data['recipientCivility'] = 'E';
                     break;
@@ -246,7 +250,7 @@ class ShippingLabelFetcher implements ShippingLabelFetcherInterface
             case 'CHRONOEXPRESS':
                 return '17';
                 break;
-            
+
             case 'RELAISEUROPE':
                 return '49';
                 break;
